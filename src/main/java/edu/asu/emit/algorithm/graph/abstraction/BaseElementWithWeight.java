@@ -31,13 +31,13 @@
 package edu.asu.emit.algorithm.graph.abstraction;
 
 /**
- * The interface defines a weighted element in graph. It could be for
- * a vertex or an edge. 
- *  
+ * The interface defines a weighted element in graph. It could be for a vertex
+ * or an edge.
+ *
  * @author yqi
  */
 public interface BaseElementWithWeight {
-	
-	public double getWeight();
-	
+
+    public double getWeight();
+
 }

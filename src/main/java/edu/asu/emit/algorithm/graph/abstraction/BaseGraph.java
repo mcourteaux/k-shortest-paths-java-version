@@ -28,25 +28,24 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
 package edu.asu.emit.algorithm.graph.abstraction;
 
 import java.util.List;
 import java.util.Set;
 
-
-
 /**
  * The interface defines a graph.
- * 
+ *
  * @author yqi
  */
 public interface BaseGraph {
-	
-	List<BaseVertex> getVertexList();
-	
-	double getEdgeWeight(BaseVertex source, BaseVertex sink);
-	Set<BaseVertex> getAdjacentVertices(BaseVertex vertex);
-	Set<BaseVertex> getPrecedentVertices(BaseVertex vertex);
-	
+
+    List<BaseVertex> getVertexList();
+
+    double getEdgeWeight(BaseVertex source, BaseVertex sink);
+
+    Set<BaseVertex> getAdjacentVertices(BaseVertex vertex);
+
+    Set<BaseVertex> getPrecedentVertices(BaseVertex vertex);
+
 }

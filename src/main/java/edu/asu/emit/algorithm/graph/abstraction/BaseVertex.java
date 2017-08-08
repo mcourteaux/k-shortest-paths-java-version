@@ -28,18 +28,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  */
-
 package edu.asu.emit.algorithm.graph.abstraction;
 
 /**
  * The interface defines a vertex in graph
- * 
+ *
  * @author yqi
  */
 public interface BaseVertex {
-	
-	int getId();
-	double getWeight();
-	void setWeight(double weight);
-	
+
+    int getId();
+
+    double getWeight();
+
+    void setWeight(double weight);
+
 }
