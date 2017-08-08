@@ -185,15 +185,23 @@ public class Graph implements BaseGraph {
 		}
 	}
 
+    /**
+     * Adds a vertex.
+     * @param vertex the vertex to be added.
+     */
+    public void addVertex(BaseVertex vertex) {
+        vertexList.add(vertex);
+        idVertexIndex.put(vertex.getId(), vertex);
+    }
+
 	/**
-	 * Note that this may not be used externally, because some other members in the class
-	 * should be updated at the same time. 
+     * Add an edge from and to the given vertex id's with a given weight.
 	 * 
 	 * @param startVertexId
 	 * @param endVertexId
 	 * @param weight
 	 */
-	protected void addEdge(int startVertexId, int endVertexId, double weight) {
+	public void addEdge(int startVertexId, int endVertexId, double weight) {
 		// actually, we should make sure all vertices ids must be correct. 
 		if (!idVertexIndex.containsKey(startVertexId) || 
 			!idVertexIndex.containsKey(endVertexId) || 
