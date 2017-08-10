@@ -47,6 +47,7 @@ import java.util.Vector;
 
 import edu.asu.emit.algorithm.graph.abstraction.BaseGraph;
 import edu.asu.emit.algorithm.graph.abstraction.BaseVertex;
+import edu.asu.emit.algorithm.utils.Map2D;
 import edu.asu.emit.algorithm.utils.Pair;
 
 /**
@@ -67,8 +68,8 @@ public class Graph implements BaseGraph {
             = new HashMap<Integer, Set<BaseVertex>>();
 
     // index for edge weights in the graph
-    protected Map<Pair<Integer, Integer>, Double> vertexPairWeightIndex
-            = new HashMap<Pair<Integer, Integer>, Double>();
+    protected Map2D<Integer, Integer, Double> vertexPairWeightIndex
+            = new Map2D<Integer, Integer, Double>();
 
     // index for vertices in the graph
     protected Map<Integer, BaseVertex> idVertexIndex
@@ -108,6 +109,24 @@ public class Graph implements BaseGraph {
     }
 
     /**
+     * Constructor to specify initial fanout capacity for the Map2D.
+     *
+     * @param initialFanoutCapacity
+     */
+    public Graph(int initialFanoutCapacity) {
+        vertexPairWeightIndex.setInitialCapacity(initialFanoutCapacity);
+    }
+
+    /**
+     * Specify initial fanout capacity for the Map2D.
+     *
+     * @param initialFanoutCapacity
+     */
+    public void setInitialFanoutCapacity(int initialFanoutCapacity) {
+        vertexPairWeightIndex.setInitialCapacity(initialFanoutCapacity);
+    }
+
+    /**
      * Default constructor
      */
     public Graph() {
@@ -124,7 +143,7 @@ public class Graph implements BaseGraph {
         idVertexIndex.clear();
         faninVerticesIndex.clear();
         fanoutVerticesIndex.clear();
-        vertexPairWeightIndex.clear();
+        vertexPairWeightIndex.clearBoth();
     }
 
     /**
@@ -212,23 +231,21 @@ public class Graph implements BaseGraph {
         }
 
         // update the adjacent-list of the graph
-        Set<BaseVertex> fanoutVertexSet = new HashSet<BaseVertex>();
-        if (fanoutVerticesIndex.containsKey(startVertexId)) {
-            fanoutVertexSet = fanoutVerticesIndex.get(startVertexId);
+        Set<BaseVertex> fanoutVertexSet = fanoutVerticesIndex.get(startVertexId);
+        if (fanoutVertexSet == null) {
+            fanoutVertexSet = new HashSet<BaseVertex>();
+            fanoutVerticesIndex.put(startVertexId, fanoutVertexSet);
         }
         fanoutVertexSet.add(idVertexIndex.get(endVertexId));
-        fanoutVerticesIndex.put(startVertexId, fanoutVertexSet);
-        //
-        Set<BaseVertex> faninVertexSet = new HashSet<BaseVertex>();
-        if (faninVerticesIndex.containsKey(endVertexId)) {
-            faninVertexSet = faninVerticesIndex.get(endVertexId);
+
+        Set<BaseVertex> faninVertexSet = faninVerticesIndex.get(endVertexId);
+        if (faninVertexSet == null) {
+            faninVertexSet = new HashSet<BaseVertex>();
+            faninVerticesIndex.put(endVertexId, faninVertexSet);
         }
         faninVertexSet.add(idVertexIndex.get(startVertexId));
-        faninVerticesIndex.put(endVertexId, faninVertexSet);
         // store the new edge 
-        vertexPairWeightIndex.put(
-                new Pair<Integer, Integer>(startVertexId, endVertexId),
-                weight);
+        vertexPairWeightIndex.put(startVertexId, endVertexId, weight);
         ++edgeNum;
     }
 
@@ -241,11 +258,11 @@ public class Graph implements BaseGraph {
         //1. prepare the text to export
         StringBuffer sb = new StringBuffer();
         sb.append(vertexNum + "\n\n");
-        for (Pair<Integer, Integer> curEdgePair : vertexPairWeightIndex.keySet()) {
-            int startingPtId = curEdgePair.first();
-            int endingPtId = curEdgePair.second();
-            double weight = vertexPairWeightIndex.get(curEdgePair);
-            sb.append(startingPtId + "	" + endingPtId + "	" + weight + "\n");
+        for (Integer k1 : vertexPairWeightIndex.level0KeySet()) {
+            for (Integer k2 : vertexPairWeightIndex.level1KeySet(k1)) {
+                double weight = vertexPairWeightIndex.get(k1, k2);
+                sb.append(k1 + "	" + k2 + "	" + weight + "\n");
+            }
         }
         //2. open the file and put the data into the file. 
         Writer output = null;
@@ -282,11 +299,8 @@ public class Graph implements BaseGraph {
     }
 
     public double getEdgeWeight(BaseVertex source, BaseVertex sink) {
-        return vertexPairWeightIndex.containsKey(
-                new Pair<Integer, Integer>(source.getId(), sink.getId()))
-                        ? vertexPairWeightIndex.get(
-                                new Pair<Integer, Integer>(source.getId(), sink.getId()))
-                        : DISCONNECTED;
+        Double d = vertexPairWeightIndex.get(source.getId(), sink.getId());
+        return d == null ? DISCONNECTED : d.doubleValue();
     }
 
     /**

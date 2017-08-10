@@ -30,7 +30,6 @@
  */
 package edu.asu.emit.qyan.test;
 
-
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -39,26 +38,28 @@ import edu.asu.emit.algorithm.graph.shortestpaths.DijkstraShortestPathAlg;
 
 /**
  * TODO Need to redo!
+ *
  * @author <a href='mailto:Yan.Qi@asu.edu'>Yan Qi</a>
  * @version $Revision: 784 $
  * @latest $Id: ShortestPathAlgTest.java 784 2009-06-19 20:08:40Z qyan $
  */
 public class ShortestPathAlgTest {
-	private Graph graph = null;
-	
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeTest
-	public void setUp() throws Exception {
-		// Import the graph from a file
-		graph = new Graph("data/test_50");
-	}
 
-	@Test
-	public void testShorstPathAlg()	{
-		System.out.println("Testing Dijkstra Algorithm.");
-		DijkstraShortestPathAlg alg = new DijkstraShortestPathAlg(graph);
-		System.out.println(alg.getShortestPath(graph.getVertex(0), graph.getVertex(38)));
-	}
+    private Graph graph = null;
+
+    /**
+     * @throws java.lang.Exception
+     */
+    @BeforeTest
+    public void setUp() throws Exception {
+        // Import the graph from a file
+        graph = new Graph("data/test_50");
+    }
+
+    @Test
+    public void testShorstPathAlg() {
+        System.out.println("Testing Dijkstra Algorithm.");
+        DijkstraShortestPathAlg alg = new DijkstraShortestPathAlg(graph);
+        System.out.println(alg.getShortestPath(graph.getVertex(0), graph.getVertex(38)));
+    }
 }
