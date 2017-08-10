@@ -222,10 +222,10 @@ public class Graph implements BaseGraph {
      * @param weight
      */
     public void addEdge(int startVertexId, int endVertexId, double weight) {
+        BaseVertex startVertex = idVertexIndex.get(startVertexId);
+        BaseVertex endVertex = idVertexIndex.get(endVertexId);
         // actually, we should make sure all vertices ids must be correct. 
-        if (!idVertexIndex.containsKey(startVertexId)
-                || !idVertexIndex.containsKey(endVertexId)
-                || startVertexId == endVertexId) {
+        if (startVertex == null || endVertex == null || startVertexId == endVertexId) {
             throw new IllegalArgumentException("The edge from " + startVertexId
                     + " to " + endVertexId + " does not exist in the graph.");
         }
@@ -233,17 +233,17 @@ public class Graph implements BaseGraph {
         // update the adjacent-list of the graph
         Set<BaseVertex> fanoutVertexSet = fanoutVerticesIndex.get(startVertexId);
         if (fanoutVertexSet == null) {
-            fanoutVertexSet = new HashSet<BaseVertex>();
+            fanoutVertexSet = new HashSet<BaseVertex>(2048);
             fanoutVerticesIndex.put(startVertexId, fanoutVertexSet);
         }
-        fanoutVertexSet.add(idVertexIndex.get(endVertexId));
+        fanoutVertexSet.add(endVertex);
 
         Set<BaseVertex> faninVertexSet = faninVerticesIndex.get(endVertexId);
         if (faninVertexSet == null) {
-            faninVertexSet = new HashSet<BaseVertex>();
+            faninVertexSet = new HashSet<BaseVertex>(2048);
             faninVerticesIndex.put(endVertexId, faninVertexSet);
         }
-        faninVertexSet.add(idVertexIndex.get(startVertexId));
+        faninVertexSet.add(startVertex);
         // store the new edge 
         vertexPairWeightIndex.put(startVertexId, endVertexId, weight);
         ++edgeNum;
