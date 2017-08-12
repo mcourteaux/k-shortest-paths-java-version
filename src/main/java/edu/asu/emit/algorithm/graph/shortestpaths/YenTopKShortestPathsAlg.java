@@ -40,7 +40,6 @@ import edu.asu.emit.algorithm.graph.Path;
 import edu.asu.emit.algorithm.graph.VariableGraph;
 import edu.asu.emit.algorithm.graph.abstraction.BaseGraph;
 import edu.asu.emit.algorithm.graph.abstraction.BaseVertex;
-import edu.asu.emit.algorithm.utils.Pair;
 import edu.asu.emit.algorithm.utils.QYPriorityQueue;
 
 /**
@@ -86,7 +85,11 @@ public class YenTopKShortestPathsAlg {
         if (graph == null) {
             throw new IllegalArgumentException("A NULL graph object occurs!");
         }
-        this.graph = new VariableGraph((Graph) graph);
+        if (graph instanceof VariableGraph) {
+            this.graph = (VariableGraph) graph;
+        } else {
+            this.graph = new VariableGraph((Graph) graph);
+        }
         this.sourceVertex = sourceVertex;
         this.targetVertex = targetVertex;
         init();
@@ -176,17 +179,16 @@ public class YenTopKShortestPathsAlg {
             BaseVertex curSuccVertex
                     = curResultPath.getVertexList().get(curDevVertexId + 1);
 
-            graph.deleteEdge(new Pair<Integer, Integer>(
-                    curDerivation.getId(), curSuccVertex.getId()));
+            graph.deleteEdge(curDerivation.getId(), curSuccVertex.getId());
         }
 
         int pathLength = curPath.getVertexList().size();
         List<BaseVertex> curPathVertexList = curPath.getVertexList();
         for (int i = 0; i < pathLength - 1; ++i) {
             graph.deleteVertex(curPathVertexList.get(i).getId());
-            graph.deleteEdge(new Pair<Integer, Integer>(
+            graph.deleteEdge(
                     curPathVertexList.get(i).getId(),
-                    curPathVertexList.get(i + 1).getId()));
+                    curPathVertexList.get(i + 1).getId());
         }
 
         //3.3 calculate the shortest tree rooted at target vertex in the graph
@@ -243,8 +245,7 @@ public class YenTopKShortestPathsAlg {
 
             //3.4.5 restore the edge
             BaseVertex succVertex = curPathVertexList.get(i + 1);
-            graph.recoverDeletedEdge(new Pair<Integer, Integer>(
-                    curRecoverVertex.getId(), succVertex.getId()));
+            graph.recoverDeletedEdge( curRecoverVertex.getId(), succVertex.getId());
 
             //3.4.6 update cost if necessary
             double cost1 = graph.getEdgeWeight(curRecoverVertex, succVertex)
